@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { BLOGS_PER_PAGE, pb } from '$lib'
+  import { pb } from '$lib'
   import { onMount } from 'svelte'
   import Markdown from 'svelte-exmarkdown'
 
@@ -62,8 +62,8 @@
               <li><a class="is-active center">新建 +</a></li>
             </ul>
             <ul class="menu-list">
-              {#each posts as blog, i}
-                <li><a class="center" onclick={() => setPostsIndex(i)}>{blog.title}</a></li>
+              {#each posts as post, i}
+                <li><a class="center" onclick={() => setPostsIndex(i)}>{post.title}</a></li>
               {/each}
             </ul>
           </aside>

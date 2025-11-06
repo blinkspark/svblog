@@ -174,41 +174,45 @@
                 {/each}
               {/if}
             </ul>
-            <nav class="pagination is-centered is-small">
-              <a
-                class="pagination-previous"
-                class:is-disabled={!hasPrevPage()}
-                onclick={() => (hasPrevPage() ? toPage(currentPage - 1) : '')}>Pre</a
-              >
-              <ul class="pagination-list">
-                <li><a class="pagination-link" class:is-current={currentPage === 1} onclick={() => toPage(1)}>1</a></li>
-                {#if totalPages == 3}
+            {#if totalPages > 1}
+              <nav class="pagination is-centered is-small">
+                <a
+                  class="pagination-previous"
+                  class:is-disabled={!hasPrevPage()}
+                  onclick={() => (hasPrevPage() ? toPage(currentPage - 1) : '')}>Pre</a
+                >
+                <ul class="pagination-list">
                   <li>
-                    <a class="pagination-link" class:is-current={currentPage === 2} onclick={() => toPage(2)}>2</a>
+                    <a class="pagination-link" class:is-current={currentPage === 1} onclick={() => toPage(1)}>1</a>
                   </li>
-                {/if}
-                {#if totalPages > 3}
-                  {#if currentPage > 3}
-                    <li><a class="pagination-ellipsis">&hellip;</a></li>
+                  {#if totalPages == 3}
+                    <li>
+                      <a class="pagination-link" class:is-current={currentPage === 2} onclick={() => toPage(2)}>2</a>
+                    </li>
                   {/if}
-                  <li><a class="pagination-link" onclick={() => toPage(currentPage - 1)}>{currentPage - 1}</a></li>
-                  <li><a class="pagination-link is-current">{currentPage}</a></li>
-                  <li><a class="pagination-link" onclick={() => toPage(currentPage + 1)}>{currentPage + 1}</a></li>
-                  {#if currentPage < totalPages - 2}
-                    <li><a class="pagination-ellipsis">&hellip;</a></li>
+                  {#if totalPages > 3}
+                    {#if currentPage > 3}
+                      <li><a class="pagination-ellipsis">&hellip;</a></li>
+                    {/if}
+                    <li><a class="pagination-link" onclick={() => toPage(currentPage - 1)}>{currentPage - 1}</a></li>
+                    <li><a class="pagination-link is-current">{currentPage}</a></li>
+                    <li><a class="pagination-link" onclick={() => toPage(currentPage + 1)}>{currentPage + 1}</a></li>
+                    {#if currentPage < totalPages - 2}
+                      <li><a class="pagination-ellipsis">&hellip;</a></li>
+                    {/if}
                   {/if}
-                {/if}
 
-                {#if totalPages > 1}
-                  <li><a class="pagination-link">{totalPages}</a></li>
-                {/if}
-              </ul>
-              <a
-                class="pagination-next"
-                class:is-disabled={!hasNextPage()}
-                onclick={() => (hasNextPage() ? toPage(currentPage + 1) : '')}>Next</a
-              >
-            </nav>
+                  {#if totalPages > 1}
+                    <li><a class="pagination-link">{totalPages}</a></li>
+                  {/if}
+                </ul>
+                <a
+                  class="pagination-next"
+                  class:is-disabled={!hasNextPage()}
+                  onclick={() => (hasNextPage() ? toPage(currentPage + 1) : '')}>Next</a
+                >
+              </nav>
+            {/if}
           </aside>
         </div>
         <div class="column is-4">

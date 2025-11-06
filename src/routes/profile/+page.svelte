@@ -16,6 +16,8 @@
 
   let titleListFetching = $state(false)
   let isCreatingPost = $state(false)
+  let isUpdatingPost = $state(false)
+  let isDeletingPost = $state(false)
 
   function setPostsIndex(index: number) {
     postsIndex = index
@@ -25,11 +27,53 @@
   }
 
   async function updatePost() {
+    if (isUpdatingPost) return
+    isUpdatingPost = true
     const post = posts[postsIndex]
     post.title = title
     post.content = content
     post.public = isPublic
-    await pb.collection('posts').update(post.id, post)
+    try {
+      await pb.collection('posts').update(post.id, post)
+      await refreshTitleList()
+    } catch (error) {
+      console.error('Error updating blog:', error)
+    } finally {
+      isUpdatingPost = false
+    }
+  }
+
+  async function deletePost() {
+    if (isDeletingPost || posts.length === 0) return
+    isDeletingPost = true
+    
+    // 添加确认对话框
+    if (!confirm(`确定要删除文章 "${posts[postsIndex].title}" 吗？此操作不可撤销。`)) {
+      isDeletingPost = false
+      return
+    }
+    
+    try {
+      await pb.collection('posts').delete(posts[postsIndex].id)
+      console.log('Deleted post:', posts[postsIndex].title)
+      
+      // 重置表单状态
+      title = ''
+      content = ''
+      isPublic = false
+      
+      // 如果删除的是当前页面的最后一篇文章，需要回到上一页
+      if (posts.length === 1 && currentPage > 1) {
+        currentPage -= 1
+      }
+      
+      await refreshTitleList()
+    } catch (error) {
+      console.error('Error deleting post:', error)
+      alert('删除文章失败，请重试')
+    } finally {
+      isDeletingPost = false
+    }
   }
 
   async function refreshTitleList() {
@@ -105,12 +149,24 @@
         <div class="column is-3">
           <aside class="menu">
             <ul class="menu-list">
-              <li><a class="is-active has-text-centered" onclick={createPost}>新建 +</a></li>
+              <li>
+                <a class="is-active has-text-centered" onclick={createPost}>
+                  {#if isCreatingPost}
+                    创建中...
+                  {:else}
+                    新建 +
+                  {/if}
+                </a>
+              </li>
             </ul>
             <ul class="menu-list">
-              {#each posts as post, i}
-                <li><a onclick={() => setPostsIndex(i)}>{post.title}</a></li>
-              {/each}
+              {#if titleListFetching}
+                <li class="has-text-centered">加载中...</li>
+              {:else}
+                {#each posts as post, i}
+                  <li><a onclick={() => setPostsIndex(i)}>{post.title}</a></li>
+                {/each}
+              {/if}
             </ul>
             <nav class="pagination is-centered is-small">
               <a
@@ -165,8 +221,20 @@
             </label>
           </div>
           <div class="columns mt-2 pl-3 pr-3">
-            <button class="button is-primary column" onclick={updatePost}>保存</button>
-            <button class="button is-danger column ml-3" onclick={updatePost}>删除</button>
+            <button class="button is-primary column" onclick={updatePost}>
+              {#if isUpdatingPost}
+                保存中...
+              {:else}
+                保存
+              {/if}
+            </button>
+            <button class="button is-danger column ml-3" onclick={deletePost}>
+              {#if isDeletingPost}
+                删除中...
+              {:else}
+                删除
+              {/if}
+            </button>
           </div>
         </div>
         <div class="column is-5">

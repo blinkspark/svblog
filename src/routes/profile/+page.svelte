@@ -6,7 +6,7 @@
   import { goto } from '$app/navigation'
 
   let tabIndex = $state(0)
-  let postsIndex = $state(0)
+  let postIndex = $state(-1)
   let title = $state('')
 
   let posts: Array<any> = $state([])
@@ -22,7 +22,8 @@
   let isDeletingPost = $state(false)
 
   function setPostsIndex(index: number) {
-    postsIndex = index
+    console.log('setPostsIndex', index)
+    postIndex = index
     title = posts[index].title
     content = posts[index].content
     isPublic = posts[index].public
@@ -31,7 +32,7 @@
   async function updatePost() {
     if (isUpdatingPost) return
     isUpdatingPost = true
-    const post = posts[postsIndex]
+    const post = posts[postIndex]
     post.title = title
     post.content = content
     post.public = isPublic
@@ -50,14 +51,14 @@
     isDeletingPost = true
 
     // 添加确认对话框
-    if (!confirm(`确定要删除文章 "${posts[postsIndex].title}" 吗？此操作不可撤销。`)) {
+    if (!confirm(`确定要删除文章 "${posts[postIndex].title}" 吗？此操作不可撤销。`)) {
       isDeletingPost = false
       return
     }
 
     try {
-      await pb.collection('posts').delete(posts[postsIndex].id)
-      console.log('Deleted post:', posts[postsIndex].title)
+      await pb.collection('posts').delete(posts[postIndex].id)
+      console.log('Deleted post:', posts[postIndex].title)
 
       // 重置表单状态
       title = ''
@@ -247,14 +248,14 @@
             </label>
           </div>
           <div class="columns mt-2 pl-3 pr-3">
-            <button class="button is-primary column" onclick={updatePost}>
+            <button class="button is-primary column" onclick={updatePost} disabled={postIndex < 0}>
               {#if isUpdatingPost}
                 保存中...
               {:else}
                 保存
               {/if}
             </button>
-            <button class="button is-danger column ml-3" onclick={deletePost}>
+            <button class="button is-danger column ml-3" onclick={deletePost} disabled={postIndex < 0}>
               {#if isDeletingPost}
                 删除中...
               {:else}

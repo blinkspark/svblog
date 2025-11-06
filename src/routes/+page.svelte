@@ -58,43 +58,46 @@
   {/each}
 
   <!-- 分页组件 -->
-  {#if totalPages >= 1}
-    <nav class="pagination is-centered mt-5" aria-label="pagination">
-      <a
-        class="pagination-previous"
-        class:is-disabled={!hasPrevPage()}
-        onclick={() => (hasPrevPage() ? toPage(currentPage - 1) : null)}>上一页</a
-      >
-      <a
-        class="pagination-next"
-        class:is-disabled={!hasNextPage()}
-        onclick={() => (hasNextPage() ? toPage(currentPage + 1) : null)}>下一页</a
-      >
-      <ul class="pagination-list">
-        <li><a class="pagination-link" class:is-current={currentPage === 1} onclick={() => toPage(1)}>1</a></li>
-        {#if totalPages == 3}
-          <li>
-            <a class="pagination-link" class:is-current={currentPage === 2} onclick={() => toPage(2)}>2</a>
-          </li>
-        {/if}
-        {#if totalPages > 3}
-          {#if currentPage > 3}
-            <li><span class="pagination-ellipsis">&hellip;</span></li>
-          {/if}
-          <li><a class="pagination-link" onclick={() => toPage(currentPage - 1)}>{currentPage - 1}</a></li>
-          <li><a class="pagination-link is-current">{currentPage}</a></li>
-          <li><a class="pagination-link" onclick={() => toPage(currentPage + 1)}>{currentPage + 1}</a></li>
-          {#if currentPage < totalPages - 2}
-            <li><span class="pagination-ellipsis">&hellip;</span></li>
-          {/if}
-        {/if}
 
-        {#if totalPages > 1}
-          <li><a class="pagination-link" onclick={() => toPage(totalPages)}>{totalPages}</a></li>
+  <nav class="pagination is-centered mt-5" aria-label="pagination">
+    <a
+      class="pagination-previous"
+      class:is-disabled={!hasPrevPage()}
+      onclick={() => (hasPrevPage() ? toPage(currentPage - 1) : null)}>上一页</a
+    >
+    <a
+      class="pagination-next"
+      class:is-disabled={!hasNextPage()}
+      onclick={() => (hasNextPage() ? toPage(currentPage + 1) : null)}>下一页</a
+    >
+    <ul class="pagination-list">
+      <li><a class="pagination-link" class:is-current={currentPage === 1} onclick={() => toPage(1)}>1</a></li>
+      {#if totalPages == 3}
+        <li>
+          <a class="pagination-link" class:is-current={currentPage === 2} onclick={() => toPage(2)}>2</a>
+        </li>
+      {/if}
+      {#if totalPages > 3}
+        {#if currentPage > 3}
+          <li><span class="pagination-ellipsis">&hellip;</span></li>
         {/if}
-      </ul>
-    </nav>
-  {/if}
+        <li><a class="pagination-link" onclick={() => toPage(currentPage - 1)}>{currentPage - 1}</a></li>
+        <li><a class="pagination-link is-current">{currentPage}</a></li>
+        <li><a class="pagination-link" onclick={() => toPage(currentPage + 1)}>{currentPage + 1}</a></li>
+        {#if currentPage < totalPages - 2}
+          <li><span class="pagination-ellipsis">&hellip;</span></li>
+        {/if}
+      {/if}
+
+      {#if totalPages > 1}
+        <li>
+          <a class="pagination-link" class:is-current={currentPage === totalPages} onclick={() => toPage(totalPages)}
+            >{totalPages}</a
+          >
+        </li>
+      {/if}
+    </ul>
+  </nav>
 </div>
 
 <style>

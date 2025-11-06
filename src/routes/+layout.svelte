@@ -2,8 +2,14 @@
   import 'bulma/css/bulma.css'
   import favicon from '$lib/assets/favicon.svg'
   import Navbar from '$lib/components/navbar.svelte'
+  import { getCloudBase } from '$lib'
+  import { onMount } from 'svelte'
 
   let { children } = $props()
+
+  onMount(() => {
+    getCloudBase()
+  })
 
 </script>
 

@@ -1,6 +1,7 @@
 <script lang="ts">
   import { pb } from '$lib'
   import { goto } from '$app/navigation'
+  import { refreshIsLogin } from '../states.svelte'
 
   let username = $state('')
   let password = $state('')
@@ -39,6 +40,7 @@
     try {
       await pb.collection('users').authWithPassword(username, password)
       // 登录成功，跳转到首页或其他页面
+      refreshIsLogin()
       await goto('/')
     } catch (error) {
       console.error('登录失败:', error)
@@ -53,6 +55,7 @@
       await pb.collection('users').create({ username, password, passwordConfirm })
       // 注册成功后自动登录
       await pb.collection('users').authWithPassword(username, password)
+      refreshIsLogin()
       // 跳转到首页或其他页面
       await goto('/')
     } catch (error) {

@@ -1,19 +1,24 @@
 <script lang="ts">
   import { pb } from '$lib'
   import Icon from '@iconify/svelte'
-  import { appState, logout, toggleTheme } from '../../routes/states.svelte'
+  import { appState, logout, refreshIsLogin, toggleTheme } from '../../routes/states.svelte'
+  import { onMount } from 'svelte'
 
   let burgerActive = $state(false)
   function toggleBurger() {
     burgerActive = !burgerActive
   }
+
+  onMount(() => {
+    refreshIsLogin()
+  })
 </script>
 
 <nav class="navbar is-info" aria-label="main navigation">
   <div class="navbar-brand">
     <!-- 品牌 Logo 或名称 -->
     <a class="navbar-item" href="/">
-      <Icon icon='material-symbols:robot-2-rounded' width=32 height=32></Icon>
+      <Icon icon="material-symbols:robot-2-rounded" width="32" height="32"></Icon>
     </a>
 
     <!-- 汉堡菜单按钮 (移动端显示) -->

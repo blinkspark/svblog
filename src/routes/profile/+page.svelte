@@ -2,6 +2,8 @@
   import { pb, POSTS_PER_PAGE } from '$lib'
   import { onMount } from 'svelte'
   import Markdown from 'svelte-exmarkdown'
+  import { appState, refreshIsLogin } from '../states.svelte'
+  import { goto } from '$app/navigation'
 
   let tabIndex = $state(0)
   let postsIndex = $state(0)
@@ -46,27 +48,27 @@
   async function deletePost() {
     if (isDeletingPost || posts.length === 0) return
     isDeletingPost = true
-    
+
     // 添加确认对话框
     if (!confirm(`确定要删除文章 "${posts[postsIndex].title}" 吗？此操作不可撤销。`)) {
       isDeletingPost = false
       return
     }
-    
+
     try {
       await pb.collection('posts').delete(posts[postsIndex].id)
       console.log('Deleted post:', posts[postsIndex].title)
-      
+
       // 重置表单状态
       title = ''
       content = ''
       isPublic = false
-      
+
       // 如果删除的是当前页面的最后一篇文章，需要回到上一页
       if (posts.length === 1 && currentPage > 1) {
         currentPage -= 1
       }
-      
+
       await refreshTitleList()
     } catch (error) {
       console.error('Error deleting post:', error)
@@ -129,6 +131,10 @@
   }
 
   onMount(async () => {
+    refreshIsLogin()
+    if (!appState.isLogin) {
+      goto('/login')
+    }
     await refreshTitleList()
   })
 </script>

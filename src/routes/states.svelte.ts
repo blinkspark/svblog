@@ -1,3 +1,4 @@
+import { goto } from '$app/navigation'
 import { pb } from '$lib'
 
 export const appState = $state({
@@ -5,6 +6,16 @@ export const appState = $state({
   isLogin: false,
   theme: 'dark',
 })
+
+export function refreshIsLogin() {
+  appState.isLogin = pb.authStore.isValid
+}
+
+export function logout() {
+  pb.authStore.clear()
+  appState.isLogin = false
+  goto('/')
+}
 
 export function toggleTheme() {
   appState.theme = appState.theme === 'dark' ? 'light' : 'dark'

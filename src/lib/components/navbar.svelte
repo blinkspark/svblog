@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { pb, pbLogout } from '$lib'
+  import { pb } from '$lib'
   import Icon from '@iconify/svelte'
-  import { appState, toggleTheme } from '../../routes/states.svelte'
+  import { appState, logout, toggleTheme } from '../../routes/states.svelte'
 
   let burgerActive = $state(false)
   function toggleBurger() {
@@ -69,7 +69,7 @@
           <div class="navbar-link">{pb.authStore.record?.username}</div>
           <div class="navbar-dropdown">
             <a class="navbar-item" href="/profile">个人中心</a>
-            <button class="navbar-item" onclick={pbLogout}>退出登录</button>
+            <button class="navbar-item" onclick={logout}>退出登录</button>
           </div>
         </div>
       {/if}

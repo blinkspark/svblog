@@ -2,17 +2,14 @@
   import 'bulma/css/bulma.css'
   import favicon from '$lib/assets/favicon.svg'
   import { pb } from '$lib'
-  import { appState } from './states.svelte'
+  import { appState, refreshIsLogin } from './states.svelte'
   import Navbar from '$lib/components/navbar.svelte'
-  
+  import { onMount } from 'svelte'
+
   let { children } = $props()
 
-  $effect(() => {
-    const unsub = pb.authStore.onChange((auth) => {
-      appState.isLogin = pb.authStore.isValid
-    })
-    appState.isLogin = pb.authStore.isValid
-    return unsub
+  onMount(() => {
+    refreshIsLogin()
   })
 </script>
 

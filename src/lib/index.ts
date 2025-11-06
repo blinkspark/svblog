@@ -6,7 +6,3 @@ const BASE_URL = import.meta.env.VITE_BASE_URL
 
 export const pb = new PocketBase(BASE_URL)
 
-export function pbLogout() {
-  pb.authStore.clear()
-}
-

@@ -7,8 +7,13 @@
 
   let { children } = $props()
 
-  onMount(() => {
-    getCloudBase()
+  onMount(async () => {
+    try {
+      const app = getCloudBase()
+      console.log('CloudBase initialized:', app)
+    } catch (error) {
+      console.error('Failed to initialize CloudBase:', error)
+    }
   })
 
 </script>

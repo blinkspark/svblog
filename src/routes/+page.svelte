@@ -58,7 +58,7 @@
   {/each}
 
   <!-- 分页组件 -->
-  {#if totalPages > 1}
+  {#if totalPages >= 1}
     <nav class="pagination is-centered mt-5" aria-label="pagination">
       <a
         class="pagination-previous"

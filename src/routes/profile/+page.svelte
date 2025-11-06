@@ -174,7 +174,7 @@
                 {/each}
               {/if}
             </ul>
-            {#if totalPages > 1}
+            {#if totalPages >= 1}
               <nav class="pagination is-centered is-small">
                 <a
                   class="pagination-previous"

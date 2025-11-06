@@ -178,7 +178,7 @@
               <a
                 class="pagination-previous"
                 class:is-disabled={!hasPrevPage()}
-                onclick={() => (hasPrevPage() ? toPage(currentPage - 1) : '')}>Pre</a
+                onclick={() => (hasPrevPage() ? toPage(currentPage - 1) : '')}>上一页</a
               >
               <ul class="pagination-list">
                 <li>
@@ -193,22 +193,40 @@
                   {#if currentPage > 3}
                     <li><a class="pagination-ellipsis">&hellip;</a></li>
                   {/if}
-                  <li><a class="pagination-link" onclick={() => toPage(currentPage - 1)}>{currentPage - 1}</a></li>
+                  <li>
+                    <a
+                      class="pagination-link"
+                      class:is-current={currentPage === currentPage - 1}
+                      onclick={() => toPage(currentPage - 1)}>{currentPage - 1}</a
+                    >
+                  </li>
                   <li><a class="pagination-link is-current">{currentPage}</a></li>
-                  <li><a class="pagination-link" onclick={() => toPage(currentPage + 1)}>{currentPage + 1}</a></li>
+                  <li>
+                    <a
+                      class="pagination-link"
+                      class:is-current={currentPage === currentPage + 1}
+                      onclick={() => toPage(currentPage + 1)}>{currentPage + 1}</a
+                    >
+                  </li>
                   {#if currentPage < totalPages - 2}
                     <li><a class="pagination-ellipsis">&hellip;</a></li>
                   {/if}
                 {/if}
 
                 {#if totalPages > 1}
-                  <li><a class="pagination-link">{totalPages}</a></li>
+                  <li>
+                    <a
+                      class="pagination-link"
+                      class:is-current={currentPage === totalPages}
+                      onclick={() => toPage(totalPages)}>{totalPages}</a
+                    >
+                  </li>
                 {/if}
               </ul>
               <a
                 class="pagination-next"
                 class:is-disabled={!hasNextPage()}
-                onclick={() => (hasNextPage() ? toPage(currentPage + 1) : '')}>Next</a
+                onclick={() => (hasNextPage() ? toPage(currentPage + 1) : '')}>下一页</a
               >
             </nav>
           </aside>

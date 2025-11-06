@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { pb } from '$lib'
+  import { pb, POSTS_PER_PAGE } from '$lib'
   import { onMount } from 'svelte'
   import Markdown from 'svelte-exmarkdown'
 
@@ -10,6 +10,12 @@
   let posts: Array<any> = $state([])
   let content = $state('')
   let isPublic = $state(false)
+
+  let currentPage = $state(1)
+  let totalPages = $state(1)
+
+  let titleListFetching = $state(false)
+  let isCreatingPost = $state(false)
 
   function setPostsIndex(index: number) {
     postsIndex = index
@@ -26,20 +32,60 @@
     await pb.collection('posts').update(post.id, post)
   }
 
-  async function refreshPosts() {
+  async function refreshTitleList() {
+    if (titleListFetching) return
+    titleListFetching = true
     try {
       //{ fields: 'id,title,created,updated' }
-      const records = await pb.collection('posts').getFullList({ fields: 'id,title,content,public' })
+      const records = await pb
+        .collection('posts')
+        .getList(currentPage, POSTS_PER_PAGE, { fields: 'id,title,content,public' })
+      totalPages = records.totalPages
       posts.length = 0
-      posts.push(...records)
+      posts.push(...records.items)
       console.log('Fetched blogs:', posts)
     } catch (error) {
       console.error('Error fetching blogs:', error)
+    } finally {
+      titleListFetching = false
     }
   }
 
+  async function createPost() {
+    if (isCreatingPost) return
+    isCreatingPost = true
+    const post = {
+      title: '新建文章',
+      public: false,
+    }
+
+    try {
+      const record = await pb.collection('posts').create(post)
+      console.log('Created blog:', record)
+      await refreshTitleList()
+    } catch (error) {
+      console.error('Error creating blog:', error)
+    } finally {
+      isCreatingPost = false
+    }
+  }
+
+  function hasNextPage() {
+    return currentPage < totalPages
+  }
+
+  function hasPrevPage() {
+    return currentPage > 1
+  }
+
+  async function toPage(page: number) {
+    if (page < 1 || page > totalPages || page === currentPage) return
+    currentPage = page
+    await refreshTitleList()
+  }
+
   onMount(async () => {
-    await refreshPosts()
+    await refreshTitleList()
   })
 </script>
 
@@ -56,19 +102,54 @@
   {#if tabIndex === 0}
     <div>
       <div class="columns">
-        <div class="column is-2">
+        <div class="column is-3">
           <aside class="menu">
             <ul class="menu-list">
-              <li><a class="is-active center">新建 +</a></li>
+              <li><a class="is-active has-text-centered" onclick={createPost}>新建 +</a></li>
             </ul>
             <ul class="menu-list">
               {#each posts as post, i}
-                <li><a class="center" onclick={() => setPostsIndex(i)}>{post.title}</a></li>
+                <li><a onclick={() => setPostsIndex(i)}>{post.title}</a></li>
               {/each}
             </ul>
+            <nav class="pagination is-centered is-small">
+              <a
+                class="pagination-previous"
+                class:is-disabled={!hasPrevPage()}
+                onclick={() => (hasPrevPage() ? toPage(currentPage - 1) : '')}>Pre</a
+              >
+              <ul class="pagination-list">
+                <li><a class="pagination-link" class:is-current={currentPage === 1} onclick={() => toPage(1)}>1</a></li>
+                {#if totalPages == 3}
+                  <li>
+                    <a class="pagination-link" class:is-current={currentPage === 2} onclick={() => toPage(2)}>2</a>
+                  </li>
+                {/if}
+                {#if totalPages > 3}
+                  {#if currentPage > 3}
+                    <li><a class="pagination-ellipsis">&hellip;</a></li>
+                  {/if}
+                  <li><a class="pagination-link" onclick={() => toPage(currentPage - 1)}>{currentPage - 1}</a></li>
+                  <li><a class="pagination-link is-current">{currentPage}</a></li>
+                  <li><a class="pagination-link" onclick={() => toPage(currentPage + 1)}>{currentPage + 1}</a></li>
+                  {#if currentPage < totalPages - 2}
+                    <li><a class="pagination-ellipsis">&hellip;</a></li>
+                  {/if}
+                {/if}
+
+                {#if totalPages > 1}
+                  <li><a class="pagination-link">{totalPages}</a></li>
+                {/if}
+              </ul>
+              <a
+                class="pagination-next"
+                class:is-disabled={!hasNextPage()}
+                onclick={() => (hasNextPage() ? toPage(currentPage + 1) : '')}>Next</a
+              >
+            </nav>
           </aside>
         </div>
-        <div class="column is-5">
+        <div class="column is-4">
           <label class="label" for="title">标题</label>
           <div class="control">
             <input type="text" bind:value={title} class="input" id="title" />
@@ -114,7 +195,4 @@
 </div>
 
 <style>
-  .center {
-    text-align: center;
-  }
 </style>

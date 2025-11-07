@@ -177,7 +177,7 @@
   }
 
   onMount(async () => {
-    refreshLoginState()
+    await refreshLoginState()
     if (!appState.isLogin) {
       goto('/login')
     }

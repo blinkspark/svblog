@@ -2,7 +2,7 @@
   import { BaseSDK, pb, POSTS_PER_PAGE, type BlogPost } from '$lib'
   import { onMount } from 'svelte'
   import { Markdown } from 'svelte-exmarkdown'
-  import { appState } from './states.svelte'
+  import { appState, refreshLoginState } from './states.svelte'
 
   let currentPage = $state(1)
   let totalPages = $state(1)
@@ -73,8 +73,9 @@
     return links
   }
 
-  onMount(() => {
-    fetchPage()
+  onMount(async () => {
+    await refreshLoginState()
+    await fetchPage()
   })
 </script>
 

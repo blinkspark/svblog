@@ -224,6 +224,8 @@
             <ul class="menu-list">
               {#if titleListFetching}
                 <li class="has-text-centered">加载中...</li>
+              {:else if posts.length === 0}
+                <li class="has-text-centered has-text-grey my-5">暂无博客文章</li>
               {:else}
                 {#each posts as post, i}
                   <li><a onclick={() => setPostsIndex(i)}>{post.title}</a></li>

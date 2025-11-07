@@ -20,6 +20,7 @@
   let isCreatingPost = $state(false)
   let isUpdatingPost = $state(false)
   let isDeletingPost = $state(false)
+  let errorMessage = $state('')
 
   function setPostsIndex(index: number) {
     console.log('setPostsIndex', index)
@@ -40,7 +41,7 @@
       await BaseSDK.cb()!.models.blogs.update({ data: post, filter: { where: { _id: post._id } } })
       await refreshTitleList()
     } catch (error) {
-      console.error('Error updating blog:', error)
+      errorMessage = `更新博客时出错: ${error instanceof Error ? error.message : String(error)}`
     } finally {
       isUpdatingPost = false
     }
@@ -71,8 +72,7 @@
 
       await refreshTitleList()
     } catch (error) {
-      console.error('Error deleting post:', error)
-      alert('删除文章失败，请重试')
+      errorMessage = `删除文章时出错: ${error instanceof Error ? error.message : String(error)}`
     } finally {
       isDeletingPost = false
     }
@@ -97,7 +97,7 @@
       posts.push(...records.data.records)
       console.log('Fetched blogs:', posts)
     } catch (error) {
-      console.error('Error fetching blogs:', error)
+      errorMessage = `获取博客列表时出错: ${error instanceof Error ? error.message : String(error)}`
     } finally {
       titleListFetching = false
     }
@@ -118,7 +118,7 @@
       console.log('Created blog:', record)
       await refreshTitleList()
     } catch (error) {
-      console.error('Error creating blog:', error)
+      errorMessage = `创建博客时出错: ${error instanceof Error ? error.message : String(error)}`
     } finally {
       isCreatingPost = false
     }
@@ -163,6 +163,17 @@
 </script>
 
 <div class="container pt-5">
+  {#if errorMessage}
+    <div class="message is-danger mt-3">
+      <div class="message-header">
+        <p>错误</p>
+        <button class="delete" aria-label="delete" onclick={() => errorMessage = ''}></button>
+      </div>
+      <div class="message-body">
+        {errorMessage}
+      </div>
+    </div>
+  {/if}
   <h2 class="title is-2">{appState.username} 的博客</h2>
   <section class="tabs">
     <ul>

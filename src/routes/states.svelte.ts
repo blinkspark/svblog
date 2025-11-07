@@ -1,5 +1,5 @@
 import { goto } from '$app/navigation'
-import { pb, cb, BaseSDK } from '$lib'
+import { BaseSDK } from '$lib'
 
 export const appState = $state({
   count: 0,

@@ -42,7 +42,7 @@
     <div class="navbar-start">
       <a class="navbar-item" href="/"> 首页 </a>
 
-      <a class="navbar-item">文档</a>
+      <a class="navbar-item" href='/test'>测试</a>
 
       <!-- 下拉菜单 -->
       <div class="navbar-item has-dropdown is-hoverable">
@@ -70,7 +70,6 @@
           </div>
         </div>
       {:else}
-        <!-- svelte-ignore a11y_missing_attribute -->
         <div class="navbar-item has-dropdown is-hoverable">
           <div class="navbar-link">{appState.username}</div>
           <div class="navbar-dropdown">

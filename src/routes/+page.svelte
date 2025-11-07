@@ -19,7 +19,7 @@
         pageNumber: currentPage,
         pageSize: POSTS_PER_PAGE,
       })
-      totalPages = res!.data.total!
+      totalPages = Math.ceil(res!.data.total! / POSTS_PER_PAGE)
       posts = res!.data.records
     } catch (error) {
     } finally {
@@ -51,11 +51,10 @@
     <h1 class="title mt-3">Loading...</h1>
   {/if}
   {#each posts as post}
-    <div class="card mt-3">
-      <header class="card-header has-background-primary">
-        <p class="card-header-title is-size-3">{post.title}</p>
-      </header>
-      <div class="content p-5">
+    <div class="card mt-3 p-5">
+      <h2 class="title is-2 has-text-centered">{post.title}</h2>
+      <hr />
+      <div class="content">
         <Markdown md={post.content} />
       </div>
     </div>

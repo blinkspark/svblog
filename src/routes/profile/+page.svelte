@@ -153,6 +153,16 @@
     await refreshTitleList()
   }
 
+  function clearPosts() {
+    if (confirm('确定要清空所有博客吗？此操作不可撤销。')) {
+      posts.length = 0
+      postIndex = -1
+      title = ''
+      content = ''
+      isPublic = false
+    }
+  }
+
   onMount(async () => {
     refreshLoginState()
     if (!appState.isLogin) {
@@ -207,6 +217,11 @@
                   <li><a onclick={() => setPostsIndex(i)}>{post.title}</a></li>
                 {/each}
               {/if}
+            </ul>
+            <ul class="menu-list">
+              <li>
+                <a class="is-active has-text-centered has-background-danger has-text-white" onclick={clearPosts}>清空所有</a>
+              </li>
             </ul>
             <nav class="pagination is-centered is-small">
               <a

@@ -37,7 +37,7 @@
     post.content = content
     post.public = isPublic
     try {
-      await BaseSDK.cb()!.models.blogs.update(post)
+      await BaseSDK.cb()!.models.blogs.update({ data: post, filter: { where: { _id: post._id } } })
       await refreshTitleList()
     } catch (error) {
       console.error('Error updating blog:', error)
@@ -57,7 +57,7 @@
     }
 
     try {
-      await BaseSDK.cb()!.models.blogs.delete(posts[postIndex]._id)
+      await BaseSDK.cb()!.models.blogs.delete({ filter: { where: { _id: posts[postIndex]._id } } })
 
       // 重置表单状态
       title = ''

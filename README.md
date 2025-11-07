@@ -1,38 +1,82 @@
-# sv
+## Project Overview
+This is a blog system built with SvelteKit, named svblog. The project uses the latest features of Svelte 5, including the new reactive state API ($state) and modern component rendering methods ($props). The project supports user login, creation, editing, publishing, and reading of blog posts.
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+## Tech Stack
+- **Frontend Framework**: SvelteKit (Svelte 5)
+- **UI Framework**: Bulma CSS
+- **Markdown Processing**: svelte-exmarkdown
+- **Icons**: @iconify/svelte
+- **Backend Services**:
+  - Tencent Cloud Development (@cloudbase/js-sdk)
+- **Development Tools**: TypeScript, Vite
 
-## Creating a project
+## Deployment Guide
 
-If you're seeing this, you've probably already done this step. Congrats!
+### Environment Requirements
+- Node.js 18.x or higher
+- npm or yarn package manager
 
-```sh
-# create a new project in the current directory
-npx sv create
+### Local Deployment
+1. Clone the project to local:
+   ```bash
+   git clone <repository_url>
+   cd svblog
+   ```
 
-# create a new project in my-app
-npx sv create my-app
-```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-## Developing
+3. Configure environment variables:
+   Create a `.env` file and add the following environment variables:
+   ```
+   PUBLIC_TENCENT_CLOUD_APP_ID=<your_tencent_cloud_app_id>
+   PUBLIC_TENCENT_CLOUD_SECRET_KEY=<your_tencent_cloud_secret_key>
+   ```
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+4. Run the development server:
+   ```bash
+   npm run dev
+   ```
 
-```sh
-npm run dev
+5. Access the application:
+   Open your browser and visit http://localhost:5173
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
+### Production Deployment
 
-## Building
-
-To create a production version of your app:
-
-```sh
+#### 1. Build the Application
+```bash
 npm run build
 ```
 
-You can preview the production build with `npm run preview`.
+#### 2. Deployment Options
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+##### Vercel Deployment
+1. Push the code to a GitHub repository
+2. Import the project in Vercel
+3. Configure environment variables
+4. Complete deployment
+
+##### Netlify Deployment
+1. Build command: `npm run build`
+2. Publish directory: `build`
+3. Configure environment variables
+
+##### Custom Server Deployment
+1. Upload the build artifacts (build directory) to the server
+2. Configure Nginx or Apache as a static file server
+3. Set up reverse proxy if needed
+
+#### 3. Environment Variables Configuration
+The following environment variables need to be configured for production:
+- `PUBLIC_TENCENT_CLOUD_APP_ID`: Tencent Cloud App ID
+- `PUBLIC_TENCENT_CLOUD_SECRET_KEY`: Tencent Cloud Secret Key
+
+### Common Issues
+
+1. **Build Failure**: Ensure Node.js version meets requirements, and clear node_modules and reinstall
+
+2. **Missing Styles**: Check if Bulma CSS is properly imported
+
+3. **API Connection Failure**: Confirm environment variables are configured correctly and backend service is running normally

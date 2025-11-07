@@ -42,6 +42,29 @@
     await fetchPage()
   }
 
+  function getPaginationLinks(): Array<number | '...'> {
+    const links: Array<number | '...'> = []
+    // 总是显示第一页
+    links.push(1)
+    // 如果当前页 > 3，添加省略号
+    if (currentPage > 3) {
+      links.push('...')
+    }
+    // 添加当前页附近的页
+    for (let i = Math.max(2, currentPage - 1); i <= Math.min(totalPages - 1, currentPage + 1); i++) {
+      if (!links.includes(i)) links.push(i)
+    }
+    // 如果当前页 < totalPages - 2，添加省略号
+    if (currentPage < totalPages - 2) {
+      links.push('...')
+    }
+    // 总是显示最后一页，如果不是第一页
+    if (totalPages > 1) {
+      links.push(totalPages)
+    }
+    return links
+  }
+
   onMount(() => {
     fetchPage()
   })
@@ -75,31 +98,13 @@
       onclick={() => (hasNextPage() ? toPage(currentPage + 1) : null)}>下一页</a
     >
     <ul class="pagination-list">
-      <li><a class="pagination-link" class:is-current={currentPage === 1} onclick={() => toPage(1)}>1</a></li>
-      {#if totalPages == 3}
-        <li>
-          <a class="pagination-link" class:is-current={currentPage === 2} onclick={() => toPage(2)}>2</a>
-        </li>
-      {/if}
-      {#if totalPages > 3}
-        {#if currentPage > 3}
+      {#each getPaginationLinks() as link}
+        {#if link === '...'}
           <li><span class="pagination-ellipsis">&hellip;</span></li>
+        {:else}
+          <li><a class="pagination-link" class:is-current={currentPage === link} onclick={() => toPage(link as number)}>{link}</a></li>
         {/if}
-        <li><a class="pagination-link" onclick={() => toPage(currentPage - 1)}>{currentPage - 1}</a></li>
-        <li><a class="pagination-link is-current">{currentPage}</a></li>
-        <li><a class="pagination-link" onclick={() => toPage(currentPage + 1)}>{currentPage + 1}</a></li>
-        {#if currentPage < totalPages - 2}
-          <li><span class="pagination-ellipsis">&hellip;</span></li>
-        {/if}
-      {/if}
-
-      {#if totalPages > 1}
-        <li>
-          <a class="pagination-link" class:is-current={currentPage === totalPages} onclick={() => toPage(totalPages)}
-            >{totalPages}</a
-          >
-        </li>
-      {/if}
+      {/each}
     </ul>
   </nav>
 </div>

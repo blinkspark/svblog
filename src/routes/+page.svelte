@@ -1,11 +1,11 @@
 <script lang="ts">
-  import { BaseSDK, pb, POSTS_PER_PAGE } from '$lib'
+  import { BaseSDK, pb, POSTS_PER_PAGE, type BlogPost } from '$lib'
   import { onMount } from 'svelte'
   import { Markdown } from 'svelte-exmarkdown'
 
   let currentPage = $state(1)
   let totalPages = $state(1)
-  let posts = $state([]) as Array<any>
+  let posts = $state([]) as Array<BlogPost>
 
   let isFetchingPage = $state(false)
   let errorMessage = $state('')
@@ -21,7 +21,7 @@
         pageSize: POSTS_PER_PAGE,
       })
       totalPages = Math.ceil(res!.data.total! / POSTS_PER_PAGE)
-      posts = res!.data.records
+      posts = res!.data.records as Array<BlogPost>
     } catch (error) {
       errorMessage = `加载博客文章时出错: ${error instanceof Error ? error.message : String(error)}`
     } finally {

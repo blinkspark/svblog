@@ -2,6 +2,9 @@
 import cloudbase from '@cloudbase/js-sdk'
 import PocketBase from 'pocketbase'
 
+// 导出类型定义
+export type { BlogPost, BlogPostListResponse } from './types'
+
 export const POSTS_PER_PAGE = 5
 const BASE_URL = import.meta.env.VITE_BASE_URL
 

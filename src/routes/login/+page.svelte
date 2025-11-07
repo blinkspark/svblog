@@ -1,7 +1,8 @@
 <script lang="ts">
   import { BaseSDK, cb } from '$lib'
   import { goto } from '$app/navigation'
-  import { refreshLoginState } from '../states.svelte'
+  import { refreshLoginState, appState } from '../states.svelte'
+  import { onMount } from 'svelte'
 
   let username = $state('')
   let password = $state('')
@@ -9,6 +10,14 @@
   let isLogin = $state(true)
   let isLoading = $state(false)
   let errorMessage = $state('')
+  
+  // 页面加载时检查登录状态
+  onMount(async () => {
+    await refreshLoginState();
+    if (appState.isLogin) {
+      await goto('/');
+    }
+  });
 
   function handleSubmit(e: Event) {
     e.preventDefault()

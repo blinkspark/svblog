@@ -232,13 +232,6 @@
                 {/each}
               {/if}
             </ul>
-            <ul class="menu-list">
-              <li>
-                <a class="is-active has-text-centered has-background-danger has-text-white" onclick={clearPosts}
-                  >清空所有</a
-                >
-              </li>
-            </ul>
             <nav class="pagination is-centered is-small">
               <a
                 class="pagination-previous"
@@ -264,6 +257,13 @@
                 onclick={() => (hasNextPage() ? toPage(currentPage + 1) : '')}>下一页</a
               >
             </nav>
+            <ul class="menu-list mt-4">
+              <li>
+                <a class="is-active has-text-centered has-background-danger has-text-white" onclick={clearPosts}
+                  >清空所有</a
+                >
+              </li>
+            </ul>
           </aside>
         </div>
         <div class="column is-4">

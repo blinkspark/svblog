@@ -132,6 +132,21 @@
     return currentPage > 1
   }
 
+  function generatePaginationLinks() {
+    if (totalPages <= 1) return []
+    let links: (number | string)[] = []
+    links.push(1)
+    if (currentPage > 3) links.push('...')
+    let start = Math.max(2, currentPage - 1)
+    let end = Math.min(totalPages - 1, currentPage + 1)
+    for (let i = start; i <= end; i++) {
+      if (!links.includes(i)) links.push(i)
+    }
+    if (currentPage < totalPages - 2) links.push('...')
+    if (totalPages > 1 && !links.includes(totalPages)) links.push(totalPages)
+    return links
+  }
+
   async function toPage(page: number) {
     if (page < 1 || page > totalPages || page === currentPage) return
     currentPage = page
@@ -189,47 +204,15 @@
                 onclick={() => (hasPrevPage() ? toPage(currentPage - 1) : '')}>上一页</a
               >
               <ul class="pagination-list">
-                <li>
-                  <a class="pagination-link" class:is-current={currentPage === 1} onclick={() => toPage(1)}>1</a>
-                </li>
-                {#if totalPages == 3}
-                  <li>
-                    <a class="pagination-link" class:is-current={currentPage === 2} onclick={() => toPage(2)}>2</a>
-                  </li>
-                {/if}
-                {#if totalPages > 3}
-                  {#if currentPage > 3}
-                    <li><a class="pagination-ellipsis">&hellip;</a></li>
+                {#each generatePaginationLinks() as link}
+                  {#if typeof link === 'number'}
+                    <li>
+                      <a class="pagination-link" class:is-current={currentPage === link} onclick={() => toPage(link)}>{link}</a>
+                    </li>
+                  {:else}
+                    <li><span class="pagination-ellipsis">{link}</span></li>
                   {/if}
-                  <li>
-                    <a
-                      class="pagination-link"
-                      class:is-current={currentPage === currentPage - 1}
-                      onclick={() => toPage(currentPage - 1)}>{currentPage - 1}</a
-                    >
-                  </li>
-                  <li><a class="pagination-link is-current">{currentPage}</a></li>
-                  <li>
-                    <a
-                      class="pagination-link"
-                      class:is-current={currentPage === currentPage + 1}
-                      onclick={() => toPage(currentPage + 1)}>{currentPage + 1}</a
-                    >
-                  </li>
-                  {#if currentPage < totalPages - 2}
-                    <li><a class="pagination-ellipsis">&hellip;</a></li>
-                  {/if}
-                {/if}
-
-                {#if totalPages > 1}
-                  <li>
-                    <a
-                      class="pagination-link"
-                      class:is-current={currentPage === totalPages}
-                      onclick={() => toPage(totalPages)}>{totalPages}</a
-                    >
-                  </li>
-                {/if}
+                {/each}
               </ul>
               <a
                 class="pagination-next"

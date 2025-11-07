@@ -85,16 +85,22 @@
   {/if}
   {#if isFetchingPage}
     <h1 class="title mt-3">Loading...</h1>
-  {/if}
-  {#each posts as post}
-    <div class="card mt-3 p-5">
-      <h2 class="title is-2 has-text-centered">{post.title}</h2>
-      <hr />
-      <div class="content">
-        <Markdown md={post.content} />
-      </div>
+  {:else if posts.length === 0 && !errorMessage}
+    <div class="card mt-3 p-5 has-text-centered">
+      <h2 class="title is-2">暂无博客文章</h2>
+      <p class="subtitle mt-3">这里还没有任何内容，请稍后再来查看。</p>
     </div>
-  {/each}
+  {:else}
+    {#each posts as post}
+      <div class="card mt-3 p-5">
+        <h2 class="title is-2 has-text-centered">{post.title}</h2>
+        <hr />
+        <div class="content">
+          <Markdown md={post.content} />
+        </div>
+      </div>
+    {/each}
+  {/if}
 
   <!-- 分页组件 -->
 

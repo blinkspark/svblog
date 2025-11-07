@@ -20,7 +20,7 @@ export async function refreshLoginState() {
     appState.username = lstate.user.username
     appState.uid = lstate.user.uid!
     appState.isLogin = true
-  }else{
+  } else {
     appState.isLogin = false
     appState.uid = lstate.user.uid!
     appState.username = ''
@@ -31,12 +31,26 @@ export async function logout() {
   if (!appState.isLogin) return
   await BaseSDK.auth()?.signOut()
   await BaseSDK.auth()?.signInAnonymously()
+  appState.username = ''
+  appState.uid = ''
   appState.isLogin = false
   goto('/')
 }
 
 export function toggleTheme() {
   appState.theme = appState.theme === 'dark' ? 'light' : 'dark'
+  setTheme(appState.theme as 'dark' | 'light')
+}
+
+export function setTheme(theme: 'dark' | 'light') {
+  appState.theme = theme
   localStorage.setItem('theme', appState.theme)
   document.documentElement.setAttribute('data-theme', appState.theme)
+}
+
+export function loadTheme() {
+  const theme = localStorage.getItem('theme')
+  if (theme) {
+    setTheme(theme as 'dark' | 'light')
+  }
 }

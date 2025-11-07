@@ -3,10 +3,12 @@
   import favicon from '$lib/assets/favicon.svg'
   import Navbar from '$lib/components/navbar.svelte'
   import { onMount } from 'svelte'
+  import { loadTheme } from './states.svelte'
 
   let { children } = $props()
 
   onMount(async () => {
+    loadTheme()
   })
 
 </script>

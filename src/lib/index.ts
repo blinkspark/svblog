@@ -6,6 +6,7 @@ import PocketBase from 'pocketbase'
 export type { BlogPost, BlogPostListResponse } from './types'
 
 export const POSTS_PER_PAGE = 5
+export const EDITOR_POSTS_PER_PAGE = 10
 const BASE_URL = import.meta.env.VITE_BASE_URL
 
 export const pb = new PocketBase(BASE_URL)

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { POSTS_PER_PAGE, BaseSDK } from '$lib'
+  import { EDITOR_POSTS_PER_PAGE, BaseSDK } from '$lib'
   import { onMount } from 'svelte'
   import Markdown from 'svelte-exmarkdown'
   import { appState, refreshLoginState, refreshUsername } from '../states.svelte'
@@ -89,10 +89,10 @@
       const records = await BaseSDK.cb()!.models.blogs.list({
         getCount: true,
         pageNumber: currentPage,
-        pageSize: POSTS_PER_PAGE,
+        pageSize: EDITOR_POSTS_PER_PAGE,
       })
       let recordCount = records.data.total
-      totalPages = Math.ceil(recordCount! / POSTS_PER_PAGE)
+      totalPages = Math.ceil(recordCount! / EDITOR_POSTS_PER_PAGE)
       posts.length = 0
       posts.push(...records.data.records)
       console.log('Fetched blogs:', posts)

@@ -8,13 +8,26 @@ export const appState = $state({
   username: '',
 })
 
-export function refreshIsLogin() {
-  let lstate = BaseSDK.auth()?.hasLoginState()
-  appState.isLogin = lstate ? true : false
+export async function refreshLoginState() {
+  let lstate = await BaseSDK.auth()?.getLoginState()
+  if (!lstate) {
+    await BaseSDK.auth()?.signInAnonymously()
+    appState.isLogin = false
+    return
+  }
+  if (lstate.user.username) {
+    appState.username = lstate.user.username
+    appState.isLogin = true
+  }else{
+    appState.isLogin = false
+    appState.username = ''
+  }
 }
 
 export async function logout() {
+  if (!appState.isLogin) return
   await BaseSDK.auth()?.signOut()
+  await BaseSDK.auth()?.signInAnonymously()
   appState.isLogin = false
   goto('/')
 }

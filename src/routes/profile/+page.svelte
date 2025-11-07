@@ -2,7 +2,7 @@
   import { POSTS_PER_PAGE, BaseSDK } from '$lib'
   import { onMount } from 'svelte'
   import Markdown from 'svelte-exmarkdown'
-  import { appState, refreshIsLogin, refreshUsername } from '../states.svelte'
+  import { appState, refreshLoginState, refreshUsername } from '../states.svelte'
   import { goto } from '$app/navigation'
 
   let tabIndex = $state(0)
@@ -139,8 +139,7 @@
   }
 
   onMount(async () => {
-    refreshIsLogin()
-    refreshUsername()
+    refreshLoginState()
     if (!appState.isLogin) {
       goto('/login')
     }

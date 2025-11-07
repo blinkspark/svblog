@@ -1,7 +1,7 @@
 <script lang="ts">
   import { BaseSDK, cb } from '$lib'
   import Icon from '@iconify/svelte'
-  import { appState, logout, refreshIsLogin, refreshUsername, toggleTheme } from '../../routes/states.svelte'
+  import { appState, logout, refreshLoginState, refreshUsername, toggleTheme } from '../../routes/states.svelte'
   import { onMount } from 'svelte'
 
   let burgerActive = $state(false)
@@ -10,8 +10,7 @@
   }
 
   onMount(() => {
-    refreshUsername()
-    refreshIsLogin()
+    refreshLoginState()
   })
 </script>
 

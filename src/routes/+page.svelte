@@ -21,6 +21,7 @@
       })
       totalPages = Math.ceil(res!.data.total! / POSTS_PER_PAGE)
       posts = res!.data.records
+      console.log(res)
     } catch (error) {
     } finally {
       isFetchingPage = false

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { BaseSDK, cb } from '$lib'
   import { goto } from '$app/navigation'
-  import { refreshIsLogin } from '../states.svelte'
+  import { refreshLoginState } from '../states.svelte'
 
   let username = $state('')
   let password = $state('')
@@ -43,7 +43,7 @@
         password,
       })
       // 登录成功，跳转到首页或其他页面
-      await refreshIsLogin()
+      await refreshLoginState()
       await goto('/')
     } catch (error) {
       console.error('登录失败:', error)
@@ -122,17 +122,17 @@
                       <i class="fas fa-spinner fa-spin"></i>
                     </span>
                   {/if}
-                  {isLogin ? 'Login' : 'Register'}
+                  {isLogin ? '登录' : '注册'}
                 </button>
               </div>
             </div>
-            <div class="field">
+            <!-- <div class="field">
               <div class="control has-text-centered">
                 <button type="button" class="button is-text" onclick={toggleMode}>
                   {isLogin ? 'Need an account? Register' : 'Already have an account? Login'}
                 </button>
               </div>
-            </div>
+            </div> -->
           </form>
         </div>
       </div>

@@ -8,6 +8,7 @@
   let posts = $state([]) as Array<any>
 
   let isFetchingPage = $state(false)
+  let errorMessage = $state('')
 
   async function fetchPage() {
     if (isFetchingPage) return
@@ -21,8 +22,8 @@
       })
       totalPages = Math.ceil(res!.data.total! / POSTS_PER_PAGE)
       posts = res!.data.records
-      console.log(res)
     } catch (error) {
+      errorMessage = `加载博客文章时出错: ${error instanceof Error ? error.message : String(error)}`
     } finally {
       isFetchingPage = false
     }
@@ -71,6 +72,17 @@
 </script>
 
 <div class="container">
+  {#if errorMessage}
+    <div class="message is-danger mt-3">
+      <div class="message-header">
+        <p>错误</p>
+        <button class="delete" aria-label="delete" onclick={() => errorMessage = ''}></button>
+      </div>
+      <div class="message-body">
+        {errorMessage}
+      </div>
+    </div>
+  {/if}
   {#if isFetchingPage}
     <h1 class="title mt-3">Loading...</h1>
   {/if}

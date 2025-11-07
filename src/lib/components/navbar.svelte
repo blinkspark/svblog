@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { pb } from '$lib'
+  import { BaseSDK, cb } from '$lib'
   import Icon from '@iconify/svelte'
-  import { appState, logout, refreshIsLogin, toggleTheme } from '../../routes/states.svelte'
+  import { appState, logout, refreshIsLogin, refreshUsername, toggleTheme } from '../../routes/states.svelte'
   import { onMount } from 'svelte'
 
   let burgerActive = $state(false)
@@ -10,6 +10,7 @@
   }
 
   onMount(() => {
+    refreshUsername()
     refreshIsLogin()
   })
 </script>
@@ -71,7 +72,7 @@
       {:else}
         <!-- svelte-ignore a11y_missing_attribute -->
         <div class="navbar-item has-dropdown is-hoverable">
-          <div class="navbar-link">{pb.authStore.record?.username}</div>
+          <div class="navbar-link">{appState.username}</div>
           <div class="navbar-dropdown">
             <a class="navbar-item" href="/profile">个人中心</a>
             <button class="navbar-item" onclick={logout}>退出登录</button>

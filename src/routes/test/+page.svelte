@@ -1,13 +1,13 @@
 <script lang="ts">
   import { goto } from '$app/navigation'
-  import { cb } from '$lib'
+  import { BaseSDK, cb } from '$lib'
 
   let username = $state('')
   let password = $state('')
 
   async function login() {
     try {
-      await cb?.auth().signIn({ username, password })
+      await BaseSDK.auth()!.signIn({ username, password })
       goto('/')
     } catch (error) {
       console.error(error)

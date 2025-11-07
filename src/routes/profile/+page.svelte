@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { pb, POSTS_PER_PAGE } from '$lib'
+  import { POSTS_PER_PAGE, BaseSDK } from '$lib'
   import { onMount } from 'svelte'
   import Markdown from 'svelte-exmarkdown'
-  import { appState, refreshIsLogin } from '../states.svelte'
+  import { appState, refreshIsLogin, refreshUsername } from '../states.svelte'
   import { goto } from '$app/navigation'
 
   let tabIndex = $state(0)
@@ -37,7 +37,7 @@
     post.content = content
     post.public = isPublic
     try {
-      await pb.collection('posts').update(post.id, post)
+      await BaseSDK.cb()!.models.blogs.update(post)
       await refreshTitleList()
     } catch (error) {
       console.error('Error updating blog:', error)
@@ -57,8 +57,7 @@
     }
 
     try {
-      await pb.collection('posts').delete(posts[postIndex].id)
-      console.log('Deleted post:', posts[postIndex].title)
+      await BaseSDK.cb()!.models.blogs.delete(posts[postIndex]._id)
 
       // 重置表单状态
       title = ''
@@ -84,12 +83,18 @@
     titleListFetching = true
     try {
       //{ fields: 'id,title,created,updated' }
-      const records = await pb
-        .collection('posts')
-        .getList(currentPage, POSTS_PER_PAGE, { fields: 'id,title,content,public' })
-      totalPages = records.totalPages
+      // const records = await pb
+      //   .collection('posts')
+      //   .getList(currentPage, POSTS_PER_PAGE, { fields: 'id,title,content,public' })
+      const records = await BaseSDK.cb()!.models.blogs.list({
+        getCount: true,
+        pageNumber: currentPage,
+        pageSize: POSTS_PER_PAGE,
+      })
+      let recordCount = records.data.total
+      totalPages = Math.ceil(recordCount! / POSTS_PER_PAGE)
       posts.length = 0
-      posts.push(...records.items)
+      posts.push(...records.data.records)
       console.log('Fetched blogs:', posts)
     } catch (error) {
       console.error('Error fetching blogs:', error)
@@ -104,10 +109,12 @@
     const post = {
       title: '新建文章',
       public: false,
+      content: '',
     }
 
     try {
-      const record = await pb.collection('posts').create(post)
+      // const record = await pb.collection('posts').create(post)
+      const record = await BaseSDK.cb()!.models.blogs.create({ data: post })
       console.log('Created blog:', record)
       await refreshTitleList()
     } catch (error) {
@@ -133,6 +140,7 @@
 
   onMount(async () => {
     refreshIsLogin()
+    refreshUsername()
     if (!appState.isLogin) {
       goto('/login')
     }
@@ -141,7 +149,7 @@
 </script>
 
 <div class="container pt-5">
-  <h2 class="title is-2">{pb.authStore.record?.username}</h2>
+  <h2 class="title is-2">{appState.username} 的博客</h2>
   <section class="tabs">
     <ul>
       <li class:is-active={tabIndex === 0}><a onclick={() => (tabIndex = 0)}>博客编辑器</a></li>

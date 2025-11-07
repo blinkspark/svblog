@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { pb, POSTS_PER_PAGE } from '$lib'
+  import { BaseSDK, pb, POSTS_PER_PAGE } from '$lib'
   import { onMount } from 'svelte'
   import { Markdown } from 'svelte-exmarkdown'
 
@@ -14,9 +14,13 @@
     isFetchingPage = true
 
     try {
-      let res = await pb.collection('posts').getList(currentPage, POSTS_PER_PAGE)
-      totalPages = res.totalPages
-      posts = res.items
+      let res = await BaseSDK.cb()?.models.blogs.list({
+        getCount: true,
+        pageNumber: currentPage,
+        pageSize: POSTS_PER_PAGE,
+      })
+      totalPages = res!.data.total!
+      posts = res!.data.records
     } catch (error) {
     } finally {
       isFetchingPage = false

@@ -153,13 +153,25 @@
     await refreshTitleList()
   }
 
-  function clearPosts() {
+  async function clearPosts() {
     if (confirm('确定要清空所有博客吗？此操作不可撤销。')) {
-      posts.length = 0
-      postIndex = -1
-      title = ''
-      content = ''
-      isPublic = false
+      try {
+        let lState = await BaseSDK.auth()!.getLoginState()
+        if (!lState) {
+          alert('用户未登录，无法执行此操作')
+          return
+        }
+
+        console.log(lState.user.uid)
+        await BaseSDK.cb()!.models.blogs.deleteMany({ 
+          filter: { where: { createBy: { $eq: lState.user.uid! } } } 
+        })
+        await refreshTitleList()
+        alert('所有博客已成功清空')
+      } catch (error) {
+        console.error('清空博客时出错:', error)
+        alert('清空博客失败，请稍后重试')
+      }
     }
   }
 
@@ -177,7 +189,7 @@
     <div class="message is-danger mt-3">
       <div class="message-header">
         <p>错误</p>
-        <button class="delete" aria-label="delete" onclick={() => errorMessage = ''}></button>
+        <button class="delete" aria-label="delete" onclick={() => (errorMessage = '')}></button>
       </div>
       <div class="message-body">
         {errorMessage}
@@ -220,7 +232,9 @@
             </ul>
             <ul class="menu-list">
               <li>
-                <a class="is-active has-text-centered has-background-danger has-text-white" onclick={clearPosts}>清空所有</a>
+                <a class="is-active has-text-centered has-background-danger has-text-white" onclick={clearPosts}
+                  >清空所有</a
+                >
               </li>
             </ul>
             <nav class="pagination is-centered is-small">
@@ -233,7 +247,9 @@
                 {#each generatePaginationLinks() as link}
                   {#if typeof link === 'number'}
                     <li>
-                      <a class="pagination-link" class:is-current={currentPage === link} onclick={() => toPage(link)}>{link}</a>
+                      <a class="pagination-link" class:is-current={currentPage === link} onclick={() => toPage(link)}
+                        >{link}</a
+                      >
                     </li>
                   {:else}
                     <li><span class="pagination-ellipsis">{link}</span></li>

@@ -86,12 +86,13 @@
       // const records = await pb
       //   .collection('posts')
       //   .getList(currentPage, POSTS_PER_PAGE, { fields: 'id,title,content,public' })
+      console.log(appState.uid)
       const records = await BaseSDK.cb()!.models.blogs.list({
         getCount: true,
         pageNumber: currentPage,
         pageSize: EDITOR_POSTS_PER_PAGE,
         orderBy: [{ createdAt: 'desc' }],
-        filter: { where: { createBy: { $eq: appState.username } } },
+        filter: { where: { createBy: { $eq: appState.uid } } },
       })
       let recordCount = records.data.total
       totalPages = Math.ceil(recordCount! / EDITOR_POSTS_PER_PAGE)
@@ -221,7 +222,7 @@
                 </a>
               </li>
             </ul>
-            <ul class="menu-list">
+            <ul class="menu-list my-3">
               {#if titleListFetching}
                 <li class="has-text-centered">加载中...</li>
               {:else if posts.length === 0}

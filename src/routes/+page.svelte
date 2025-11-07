@@ -2,6 +2,7 @@
   import { BaseSDK, pb, POSTS_PER_PAGE, type BlogPost } from '$lib'
   import { onMount } from 'svelte'
   import { Markdown } from 'svelte-exmarkdown'
+  import { appState } from './states.svelte'
 
   let currentPage = $state(1)
   let totalPages = $state(1)
@@ -19,6 +20,12 @@
         getCount: true,
         pageNumber: currentPage,
         pageSize: POSTS_PER_PAGE,
+        orderBy: [{ createdAt: 'desc' }],
+        filter: {
+          where: {
+            $or: [{ createBy: { $eq: appState.uid } }, { public: { $eq: true } }],
+          },
+        },
       })
       totalPages = Math.ceil(res!.data.total! / POSTS_PER_PAGE)
       posts = res!.data.records as Array<BlogPost>
@@ -76,7 +83,7 @@
     <div class="message is-danger mt-3">
       <div class="message-header">
         <p>错误</p>
-        <button class="delete" aria-label="delete" onclick={() => errorMessage = ''}></button>
+        <button class="delete" aria-label="delete" onclick={() => (errorMessage = '')}></button>
       </div>
       <div class="message-body">
         {errorMessage}
@@ -120,7 +127,11 @@
         {#if link === '...'}
           <li><span class="pagination-ellipsis">&hellip;</span></li>
         {:else}
-          <li><a class="pagination-link" class:is-current={currentPage === link} onclick={() => toPage(link as number)}>{link}</a></li>
+          <li>
+            <a class="pagination-link" class:is-current={currentPage === link} onclick={() => toPage(link as number)}
+              >{link}</a
+            >
+          </li>
         {/if}
       {/each}
     </ul>

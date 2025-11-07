@@ -2,7 +2,7 @@
   import { EDITOR_POSTS_PER_PAGE, BaseSDK } from '$lib'
   import { onMount } from 'svelte'
   import Markdown from 'svelte-exmarkdown'
-  import { appState, refreshLoginState, refreshUsername } from '../states.svelte'
+  import { appState, refreshLoginState } from '../states.svelte'
   import { goto } from '$app/navigation'
 
   let tabIndex = $state(0)
@@ -90,6 +90,8 @@
         getCount: true,
         pageNumber: currentPage,
         pageSize: EDITOR_POSTS_PER_PAGE,
+        orderBy: [{ createdAt: 'desc' }],
+        filter: { where: { createBy: { $eq: appState.username } } },
       })
       let recordCount = records.data.total
       totalPages = Math.ceil(recordCount! / EDITOR_POSTS_PER_PAGE)
@@ -156,15 +158,13 @@
   async function clearPosts() {
     if (confirm('确定要清空所有博客吗？此操作不可撤销。')) {
       try {
-        let lState = await BaseSDK.auth()!.getLoginState()
-        if (!lState) {
+        if (!appState.isLogin) {
           alert('用户未登录，无法执行此操作')
           return
         }
 
-        console.log(lState.user.uid)
-        await BaseSDK.cb()!.models.blogs.deleteMany({ 
-          filter: { where: { createBy: { $eq: lState.user.uid! } } } 
+        await BaseSDK.cb()!.models.blogs.deleteMany({
+          filter: { where: { createBy: { $eq: appState.uid } } },
         })
         await refreshTitleList()
         alert('所有博客已成功清空')

@@ -6,6 +6,7 @@ export const appState = $state({
   isLogin: false,
   theme: 'dark',
   username: '',
+  uid: '',
 })
 
 export async function refreshLoginState() {
@@ -17,9 +18,11 @@ export async function refreshLoginState() {
   }
   if (lstate.user.username) {
     appState.username = lstate.user.username
+    appState.uid = lstate.user.uid!
     appState.isLogin = true
   }else{
     appState.isLogin = false
+    appState.uid = lstate.user.uid!
     appState.username = ''
   }
 }
@@ -36,9 +39,4 @@ export function toggleTheme() {
   appState.theme = appState.theme === 'dark' ? 'light' : 'dark'
   localStorage.setItem('theme', appState.theme)
   document.documentElement.setAttribute('data-theme', appState.theme)
-}
-
-export async function refreshUsername() {
-  const user = await BaseSDK.auth()?.getLoginState()
-  user?.user.username && (appState.username = user.user.username)
 }

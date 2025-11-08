@@ -1,5 +1,5 @@
 import { goto } from '$app/navigation'
-import { BaseSDK } from '$lib'
+import { getBackendService } from '$lib'
 
 export const appState = $state({
   count: 0,
@@ -10,27 +10,29 @@ export const appState = $state({
 })
 
 export async function refreshLoginState() {
-  let lstate = await BaseSDK.auth()?.getLoginState()
+  const backend = getBackendService()
+  let lstate = await backend.getLoginState()
   if (!lstate) {
-    await BaseSDK.auth()?.signInAnonymously()
+    await backend.signInAnonymously()
     appState.isLogin = false
     return
   }
-  if (lstate.user.username) {
+  if (lstate.user?.username) {
     appState.username = lstate.user.username
-    appState.uid = lstate.user.uid!
+    appState.uid = lstate.user.uid
     appState.isLogin = true
   } else {
     appState.isLogin = false
-    appState.uid = lstate.user.uid!
+    appState.uid = lstate.user?.uid || ''
     appState.username = ''
   }
 }
 
 export async function logout() {
   if (!appState.isLogin) return
-  await BaseSDK.auth()?.signOut()
-  await BaseSDK.auth()?.signInAnonymously()
+  const backend = getBackendService()
+  await backend.signOut()
+  await backend.signInAnonymously()
   appState.username = ''
   appState.uid = ''
   appState.isLogin = false

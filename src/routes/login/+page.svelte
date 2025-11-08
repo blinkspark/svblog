@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { BaseSDK, cb } from '$lib'
+  import { getBackendService } from '$lib'
   import { goto } from '$app/navigation'
   import { refreshLoginState, appState } from '../states.svelte'
   import { onMount } from 'svelte'
@@ -47,7 +47,8 @@
 
   async function handleLogin() {
     try {
-      await BaseSDK.auth()!.signIn({
+      const backend = getBackendService()
+      await backend.signIn({
         username,
         password,
       })

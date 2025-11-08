@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { EDITOR_POSTS_PER_PAGE, BaseSDK } from '$lib'
+  import { EDITOR_POSTS_PER_PAGE, getBackendService } from '$lib'
   import { onMount } from 'svelte'
   import Markdown from 'svelte-exmarkdown'
   import { appState, refreshLoginState } from '../states.svelte'
@@ -38,7 +38,8 @@
     post.content = content
     post.public = isPublic
     try {
-      await BaseSDK.cb()!.models.blogs.update({ data: post, filter: { where: { _id: post._id } } })
+      const backend = getBackendService()
+      await backend.updateBlogPost(post._id, post)
       await refreshTitleList()
     } catch (error) {
       errorMessage = `更新博客时出错: ${error instanceof Error ? error.message : String(error)}`
@@ -58,7 +59,8 @@
     }
 
     try {
-      await BaseSDK.cb()!.models.blogs.delete({ filter: { where: { _id: posts[postIndex]._id } } })
+      const backend = getBackendService()
+      await backend.deleteBlogPost(posts[postIndex]._id)
 
       // 重置表单状态
       title = ''
@@ -83,7 +85,8 @@
     titleListFetching = true
     try {
       console.log(appState.uid)
-      const records = await BaseSDK.cb()!.models.blogs.list({
+      const backend = getBackendService()
+      const records = await backend.getBlogPosts({
         getCount: true,
         pageNumber: currentPage,
         pageSize: EDITOR_POSTS_PER_PAGE,
@@ -91,7 +94,7 @@
         filter: { where: { createBy: { $eq: appState.uid } } },
       })
       let recordCount = records.data.total
-      totalPages = Math.ceil(recordCount! / EDITOR_POSTS_PER_PAGE)
+      totalPages = Math.ceil(recordCount / EDITOR_POSTS_PER_PAGE)
       posts.length = 0
       posts.push(...records.data.records)
       console.log('Fetched blogs:', posts)
@@ -112,7 +115,11 @@
     }
 
     try {
-      const record = await BaseSDK.cb()!.models.blogs.create({ data: post })
+      const backend = getBackendService()
+      const record = await backend.createBlogPost({
+        ...post,
+        createBy: appState.uid
+      })
       console.log('Created blog:', record)
       await refreshTitleList()
     } catch (error) {
@@ -159,8 +166,9 @@
           return
         }
 
-        await BaseSDK.cb()!.models.blogs.deleteMany({
-          filter: { where: { createBy: { $eq: appState.uid } } },
+        const backend = getBackendService()
+        await backend.deleteBlogPosts({
+          where: { createBy: { $eq: appState.uid } }
         })
         await refreshTitleList()
         alert('所有博客已成功清空')

@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { BaseSDK, cb } from '$lib'
   import Icon from '@iconify/svelte'
   import { appState, logout, refreshLoginState, toggleTheme } from '../../routes/states.svelte'
   import { onMount } from 'svelte'

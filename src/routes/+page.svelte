@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { BaseSDK, POSTS_PER_PAGE, type BlogPost } from '$lib'
+  import { getBackendService, POSTS_PER_PAGE, type BlogPost } from '$lib'
   import { onMount } from 'svelte'
   import { Markdown } from 'svelte-exmarkdown'
   import { appState, refreshLoginState } from './states.svelte'
@@ -16,7 +16,8 @@
     isFetchingPage = true
 
     try {
-      let res = await BaseSDK.cb()?.models.blogs.list({
+      const backend = getBackendService()
+      let res = await backend.getBlogPosts({
         getCount: true,
         pageNumber: currentPage,
         pageSize: POSTS_PER_PAGE,
@@ -27,8 +28,8 @@
           },
         },
       })
-      totalPages = Math.ceil(res!.data.total! / POSTS_PER_PAGE)
-      posts = res!.data.records as Array<BlogPost>
+      totalPages = Math.ceil(res.data.total / POSTS_PER_PAGE)
+      posts = res.data.records as Array<BlogPost>
     } catch (error) {
       errorMessage = `加载博客文章时出错: ${error instanceof Error ? error.message : String(error)}`
     } finally {

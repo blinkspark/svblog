@@ -1,14 +1,25 @@
 // place files you want to import through the `$lib` alias in this folder.
 import cloudbase from '@cloudbase/js-sdk'
+import { BackendServiceFactory } from './backend'
 
 // 导出类型定义
-export type { BlogPost, BlogPostListResponse } from './types'
+export type { BlogPost, BlogPostListResponse, BackendService, AuthCredentials } from './types'
 
 export const POSTS_PER_PAGE = 5
 export const EDITOR_POSTS_PER_PAGE = 10
 
 export const CB_ENV = import.meta.env.VITE_CB_ENV
 
+// 新的Backend Service实例
+let _backendService: import('./backend').BackendService | undefined = undefined
+export function getBackendService(): import('./backend').BackendService {
+  if (!_backendService) {
+    _backendService = BackendServiceFactory.create(CB_ENV)
+  }
+  return _backendService
+}
+
+// 保留原有API以保持兼容性
 let _cb: cloudbase.app.App | undefined = undefined
 export function cb(): cloudbase.app.App | undefined {
   if (!_cb) {

@@ -1,15 +1,11 @@
 // place files you want to import through the `$lib` alias in this folder.
 import cloudbase from '@cloudbase/js-sdk'
-import PocketBase from 'pocketbase'
 
 // 导出类型定义
 export type { BlogPost, BlogPostListResponse } from './types'
 
 export const POSTS_PER_PAGE = 5
 export const EDITOR_POSTS_PER_PAGE = 10
-const BASE_URL = import.meta.env.VITE_BASE_URL
-
-export const pb = new PocketBase(BASE_URL)
 
 export const CB_ENV = import.meta.env.VITE_CB_ENV
 

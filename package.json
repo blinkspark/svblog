@@ -24,7 +24,6 @@
 		"@cloudbase/js-sdk": "^2.22.4",
 		"@iconify/svelte": "^5.1.0",
 		"bulma": "^1.0.4",
-		"pocketbase": "^0.26.3",
 		"svelte-exmarkdown": "^5.0.2"
 	}
 }

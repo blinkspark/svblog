@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { BaseSDK, pb, POSTS_PER_PAGE, type BlogPost } from '$lib'
+  import { BaseSDK, POSTS_PER_PAGE, type BlogPost } from '$lib'
   import { onMount } from 'svelte'
   import { Markdown } from 'svelte-exmarkdown'
   import { appState, refreshLoginState } from './states.svelte'

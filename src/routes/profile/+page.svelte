@@ -82,10 +82,6 @@
     if (titleListFetching) return
     titleListFetching = true
     try {
-      //{ fields: 'id,title,created,updated' }
-      // const records = await pb
-      //   .collection('posts')
-      //   .getList(currentPage, POSTS_PER_PAGE, { fields: 'id,title,content,public' })
       console.log(appState.uid)
       const records = await BaseSDK.cb()!.models.blogs.list({
         getCount: true,
@@ -116,7 +112,6 @@
     }
 
     try {
-      // const record = await pb.collection('posts').create(post)
       const record = await BaseSDK.cb()!.models.blogs.create({ data: post })
       console.log('Created blog:', record)
       await refreshTitleList()

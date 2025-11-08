@@ -63,19 +63,6 @@
   }
 
   async function handleRegister() {
-    // try {
-    //   await pb.collection('users').create({ username, password, passwordConfirm })
-    //   // 注册成功后自动登录
-    //   await pb.collection('users').authWithPassword(username, password)
-    //   refreshIsLogin()
-    //   // 跳转到首页或其他页面
-    //   await goto('/')
-    // } catch (error) {
-    //   console.error('注册失败:', error)
-    //   errorMessage = '注册失败，请稍后重试'
-    // } finally {
-    //   isLoading = false
-    // }
     throw new Error('注册功能暂未实现')
   }
 
